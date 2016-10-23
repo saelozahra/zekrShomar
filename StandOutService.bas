@@ -4,7 +4,7 @@ ModulesStructureVersion=1
 B4A=true
 @EndOfDesignText@
 #Region  Service Attributes 
-	#StartAtBoot: false
+	#StartAtBoot: true
 #End Region
 
 Sub Process_Globals
@@ -24,7 +24,7 @@ Sub Process_Globals
 	Public LayoutName As String
 	
 	Public count As Int
-	
+	Dim t As Timer
 End Sub
 
 #Region Service
@@ -35,6 +35,18 @@ End Sub
 Sub Service_Start (StartingIntent As Intent)
 	mWindow.Initialize("Window")
 	StandOut.Show(mWindow.UniqueId)
+	t.Initialize("t",18000)
+	
+	If File.ReadString(File.DirDefaultExternal,"setting-vibrate.dat") == "true" Then
+		t.Enabled=True
+	Else
+		t.Enabled=False
+	End If
+	
+End Sub
+
+Sub t_Tick
+	Main.pv.Vibrate(20)
 End Sub
 
 Sub Service_Destroy
@@ -65,7 +77,7 @@ Sub Window_CreateAndAttachView (Id As Int, Frame As RSFrameLayout) As Panel
 '	Frame.AddView(Content, MaxWidth, MaxHeight)
 	Frame.AddView(Content, width, height)
 	Dim cd As ColorDrawable
-	cd.Initialize(Colors.DarkGray,50dip)
+	cd.Initialize(Colors.ARGB(180,100,100,100),50dip)
 	Content.Background=cd
 	Dim ripple As RippleView
 	
@@ -77,7 +89,7 @@ Sub Window_CreateAndAttachView (Id As Int, Frame As RSFrameLayout) As Panel
 	bbb.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 	bbb.Text=File.ReadString(File.DirDefaultExternal,"count")
 	
-	ripple.Initialize(bbb,Colors.White,110,True)
+	ripple.Initialize(bbb,Main.color,110,True)
 	
 	Return Content
 End Sub
@@ -87,6 +99,11 @@ Sub bbb_Click
 	Dim btn As Button
 	btn = Sender
 	btn.Text = count
+	Main.pv.Vibrate(200)
+End Sub
+
+Sub bbb_LongClick
+	StartActivity(Main)
 End Sub
 #End Region
 

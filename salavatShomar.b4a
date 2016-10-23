@@ -7,15 +7,17 @@ IconFile=
 NumberOfFiles=2
 File1=f1.bal
 File2=Vazir-Light.ttf
-NumberOfLibraries=3
+NumberOfLibraries=5
 Library1=core
 Library2=rsstandout
 Library3=rippleeffect
+Library4=phone
+Library5=materialcolors
 @EndOfDesignText@
 #Region  Project Attributes 
 	#ApplicationLabel: ذکر شمار
-	#VersionCode: 1
-	#VersionName: 1.00
+	#VersionCode: 2
+	#VersionName: 2.0.0
 	'SupportedOrientations possible values: unspecified, landscape or portrait.
 	#SupportedOrientations: unspecified
 	#CanInstallToExternalStorage: False
@@ -28,7 +30,8 @@ Library3=rippleeffect
 #End Region
 
 Sub Process_Globals
-
+	Public color As Int = 0xFF4CAF50
+	Dim pv As PhoneVibrate
 End Sub
 
 Sub Globals
@@ -47,9 +50,15 @@ Sub Globals
 	Private actionbar As Label
 	Private savedNumber As EditText
 	Private savedNumberL As Label
+	Dim mc As MaterialColors
+	Private number As EditText
+	Private ToggleButton1 As ToggleButton
+	Private toggleL As Label
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
+	
+	color = mc.md_deep_orange_500
 	
 	Activity.LoadLayout("f1")
 	
@@ -59,13 +68,11 @@ Sub Activity_Create(FirstTime As Boolean)
 		empty_Click
 	End If
 	
-	
-'	StandOutService.MaxHeight = mxh.Text
-'	StandOutService.MaxWidth = mxw.Text
-'	StandOutService.MinHeight = mnw.Text
-'	StandOutService.MinWidth =  mnw.Text
-	
-		
+	If File.Exists(File.DirDefaultExternal,"setting-vibrate.dat") Then
+		ToggleButton1.Checked = File.ReadString(File.DirDefaultExternal,"setting-vibrate.dat")
+	Else
+		File.WriteString(File.DirDefaultExternal,"setting-vibrate.dat","true")
+	End If
 	StandOutService.Height = mxw.Text
 	StandOutService.Width =  mxw.Text
 	
@@ -80,7 +87,7 @@ Sub Activity_Create(FirstTime As Boolean)
 	
 	mxw.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 	mxh.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
-'	mnw.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	toggleL.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 '	mnh.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 	empty.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 	Button1.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
@@ -93,14 +100,21 @@ Sub Activity_Create(FirstTime As Boolean)
 	savedNumber.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 	savedNumberL.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
 	
-	ripple.Initialize(empty,0xFF4CAF50,313,False)
-	ripple.Initialize(Button1,0xFF4CAF50,313,False)
-	ripple.Initialize(Button2,0xFF4CAF50,313,False)
+	ripple.Initialize(empty,color,313,False)
+	ripple.Initialize(Button1,color,313,False)
+	ripple.Initialize(Button2,color,313,False)
 	
 	If File.Exists(File.DirDefaultExternal,"savedNumber")Then
 		savedNumber.Text = File.ReadString(File.DirDefaultExternal,"savedNumber")
 	End If
 	
+	number.Text = File.ReadString(File.DirDefaultExternal,"count")
+	
+	If number.Text > 0 Then
+		empty.Text = "عددو ذخیره کن"
+	Else
+		empty.Text = "صفرش کن"
+	End If
 End Sub
 
 Sub Activity_Resume
@@ -123,9 +137,20 @@ End Sub
 
 
 Sub empty_Click
-	File.WriteString(File.DirDefaultExternal,"count",0)
+	File.WriteString(File.DirDefaultExternal,"count",number.Text)
 End Sub
 
 Sub savedNumber_TextChanged (Old As String, New As String)
 	File.WriteString(File.DirDefaultExternal,"savedNumber",New)
+End Sub
+
+Sub ToggleButton1_CheckedChange(Checked As Boolean)
+	File.WriteString(File.DirDefaultExternal,"setting-vibrate.dat",Checked)
+	
+	Try
+		StandOutService.t.Enabled = Checked
+	Catch
+		Log(LastException.Message)
+	End Try
+	
 End Sub

@@ -2,8 +2,8 @@
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.rootsoft.rsstandout"
-	android:versionCode="1"
-	android:versionName="1.00"
+	android:versionCode="2"
+	android:versionName="2.0.0"
 	android:installLocation="internalOnly">
 	
 	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"/>
@@ -12,7 +12,9 @@
 	    android:smallScreens="true" 
 	    android:anyDensity="true"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.VIBRATE"/>
 	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 	<application
 		android:icon="@drawable/icon"
 		android:label="ذکر شمار"
@@ -34,6 +36,9 @@
 		<service android:name=".standoutservice">
 		</service>
 		<receiver android:name=".standoutservice$standoutservice_BR">
+			<intent-filter>
+			<action android:name="android.intent.action.BOOT_COMPLETED"/>
+			</intent-filter>
 		</receiver>
 	</application>
 </manifest>
