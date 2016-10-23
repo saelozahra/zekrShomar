@@ -1,0 +1,131 @@
+﻿Version=5.95
+NumberOfModules=1
+Module1=StandOutService
+Build1=Default,com.rootsoft.rsstandout
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: http://www.basic4ppc.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="14"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~SetApplicationAttribute(android:theme,"@android:style/Theme.Holo.Light.DarkActionBar")~\n~AddApplicationText(<service android:name="com.rootsoft.rsstandout.RSStandOutWindow"  />)~\n~~\n~~\n~
+IconFile=
+NumberOfFiles=2
+File1=f1.bal
+File2=Vazir-Light.ttf
+NumberOfLibraries=3
+Library1=core
+Library2=rsstandout
+Library3=rippleeffect
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: ذکر شمار
+	#VersionCode: 1
+	#VersionName: 1.00
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+	
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: False
+#End Region
+
+Sub Process_Globals
+
+End Sub
+
+Sub Globals
+	Dim ripple As RippleView
+	Private mxw As EditText
+	Private mxh As EditText
+'	Private mnw As EditText
+'	Private mnh As EditText
+	Private empty As Button
+	Private Button1 As Button
+	Private Button2 As Button
+	Private mxwl As Label
+	Private mxhl As Label
+'	Private mnwl As Label
+'	Private mnhl As Label
+	Private actionbar As Label
+	Private savedNumber As EditText
+	Private savedNumberL As Label
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	
+	Activity.LoadLayout("f1")
+	
+	actionbar.Text = Application.LabelName
+	
+	If File.Exists(File.DirDefaultExternal,"count")==False Then
+		empty_Click
+	End If
+	
+	
+'	StandOutService.MaxHeight = mxh.Text
+'	StandOutService.MaxWidth = mxw.Text
+'	StandOutService.MinHeight = mnw.Text
+'	StandOutService.MinWidth =  mnw.Text
+	
+		
+	StandOutService.Height = mxw.Text
+	StandOutService.Width =  mxw.Text
+	
+	StandOutService.AppName = "صلوات شمار"
+	StandOutService.HiddenTitle = "این مخفی شده است"
+	StandOutService.Icon = "icon"
+	StandOutService.NewTitle = "افزودن صلوات شمار جدید"
+	StandOutService.RestoreTitle = "این را بازیابی کن"
+	StandOutService.RunningTitle = "برنامه اجرا شده است"
+	
+	StandOutService.StandOut.Initialize("standout")
+	
+	mxw.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	mxh.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+'	mnw.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+'	mnh.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	empty.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	Button1.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	Button2.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	mxwl.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	mxhl.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+'	mnwl.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+'	mnhl.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	actionbar.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	savedNumber.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	savedNumberL.Typeface=Typeface.LoadFromAssets("Vazir-Light.ttf")
+	
+	ripple.Initialize(empty,0xFF4CAF50,313,False)
+	ripple.Initialize(Button1,0xFF4CAF50,313,False)
+	ripple.Initialize(Button2,0xFF4CAF50,313,False)
+	
+	If File.Exists(File.DirDefaultExternal,"savedNumber")Then
+		savedNumber.Text = File.ReadString(File.DirDefaultExternal,"savedNumber")
+	End If
+	
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+
+
+Sub Button1_Click
+	StartService(StandOutService.StandOut.StartIntent)
+End Sub
+
+
+Sub Button2_Click
+	StopService(StandOutService.StandOut.StartIntent)
+End Sub
+
+
+Sub empty_Click
+	File.WriteString(File.DirDefaultExternal,"count",0)
+End Sub
+
+Sub savedNumber_TextChanged (Old As String, New As String)
+	File.WriteString(File.DirDefaultExternal,"savedNumber",New)
+End Sub
