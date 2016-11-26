@@ -4,7 +4,7 @@ ModulesStructureVersion=1
 B4A=true
 @EndOfDesignText@
 #Region  Service Attributes 
-	#StartAtBoot: true
+	#StartAtBoot: false
 #End Region
 
 Sub Process_Globals
@@ -29,7 +29,7 @@ End Sub
 
 #Region Service
 Sub Service_Create
-
+	
 End Sub
 
 Sub Service_Start (StartingIntent As Intent)
